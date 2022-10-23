@@ -1,0 +1,8 @@
+{"minute_directory": "directory/to/minutes",
+ "minute_template": "directory/to/templates/meeting.md",
+ "minute_git_directory": "wiki/root",
+ "url": "https://url.wiki",
+ "tidyAuth_directory": "tidyauth/location",
+ "webhook": "slack webhook",
+ "tidytoken": "tidyhq token",
+ "committee_id": 0}
