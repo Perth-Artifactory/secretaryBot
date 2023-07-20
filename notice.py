@@ -95,7 +95,7 @@ if days_until_meeting in [7,3]:
     text="A meeting notice has been sent",
     blocks=blocks)
 
-elif hours_until_meeting < 24:
+elif -1 < hours_until_meeting < 24:
     blocks=[
         {
             "type": "section",
