@@ -48,7 +48,7 @@ for heading in toc:
         capturing = True
     elif heading[:3] == "## ":
         capturing = False
-    elif capturing and heading[:5] != "#### " and heading[4:] != 'OTHER BUSINESS EXAMPLE':
+    elif capturing and heading[:5] != "#### " and heading[:6] != "##### " and heading[4:] != 'OTHER BUSINESS EXAMPLE':
         other_business.append(heading[4:])
 if not other_business:
     other_business = ["No other business has been added"]
