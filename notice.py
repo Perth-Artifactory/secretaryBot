@@ -19,8 +19,15 @@ newest = datetime.datetime(1901, 1, 1)
 newest_file = ""
 meeting_tomorrow = False
 days_until_meeting = 0
-for minute in glob.glob(f'{config["minute_directory"]}\*.md'):
-    file = minute.split("\\")[-1].replace(".md","")
+
+# TODO - make this work for both windows and unix
+# Windows endings
+#for minute in glob.glob(f'{config["minute_directory"]}\*.md'):
+#    file = minute.split("\\")[-1].replace(".md","")
+    
+# Unix endings
+for minute in glob.glob(f'{config["minute_directory"]}/*.md'):
+    file = minute.split("/")[-1].replace(".md","")
 
     pattern = "Scheduled start: \d{4}-\d{2}-\d{2}, (2[0-3]|[01]?[0-9]):[0-5][0-9]"
     with open(minute,"r", encoding='utf-8') as f:
