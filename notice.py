@@ -19,8 +19,10 @@ force_tidy = False
 if len(sys.argv) > 1:
     if "force-slack" in sys.argv:
         force_slack = True
-    if "force-tidy" in sys.argv:
-        force_tidy = True
+        print("Forcing notice sent over Slack regardless of time until the next meeting")
+    if "force-tidyhq" in sys.argv:
+        force_tidyhq = True
+        print("Forcing notice sent over TidyHQ regardless of time until the next meeting")
 
 slack = WebhookClient(config["webhook"])
 
@@ -84,6 +86,7 @@ for ob in other_business:
 print(f"It is {days_until_meeting} days ({hours_until_meeting} hours) until the next meeting")
 
 if days_until_meeting in [7,3] or force_slack:
+    print("Sending notice over Slack that a meeting is coming up")
     blocks=[
         {
             "type": "section",
@@ -114,6 +117,7 @@ if days_until_meeting in [7,3] or force_slack:
     blocks=blocks)
 
 elif -1 < hours_until_meeting < 24:
+    print("Sending notice over Slack that a meeting is coming up in less than 24 hours")
     blocks=[
         {
             "type": "section",
@@ -135,7 +139,8 @@ elif -1 < hours_until_meeting < 24:
     text="A meeting notice has been sent",
     blocks=blocks)
 
-if days_until_meeting == 2 or force_tidy:
+if days_until_meeting == 2 or force_tidyhq:
+    print("Sending notice over TidyHQ that a meeting is coming up")
     r = requests.get(f'https://api.tidyhq.com/v1/groups/{config["committee_id"]}/contacts',params={"access_token":config["tidytoken"]})
     for contact in r.json():
         p = {"access_token":config["tidytoken"],
