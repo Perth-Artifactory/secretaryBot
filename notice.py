@@ -65,6 +65,8 @@ other_business_string = ""
 for ob in other_business:
     other_business_string += f' ‣ {ob}\n'
 
+print(f"It is {days_until_meeting} days until the next meeting")
+
 if days_until_meeting in [7,3]:
     blocks=[
         {
