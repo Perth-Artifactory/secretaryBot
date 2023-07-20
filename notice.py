@@ -117,15 +117,13 @@ elif -1 < hours_until_meeting < 24:
     text="A meeting notice has been sent",
     blocks=blocks)
 
-if days_until_meeting == 3:
+if days_until_meeting == 2:
     r = requests.get(f'https://api.tidyhq.com/v1/groups/{config["committee_id"]}/contacts',params={"access_token":config["tidytoken"]})
-    committee = []
     for contact in r.json():
-        committee.append(contact["id"])
-    p = {"access_token":config["tidytoken"],
-         "subject":"Notice of Perth Artifactory Inc Committee Meeting",
-         "body":f"""The next meeting of the Management Committee is scheduled for {newest} at 8/16 Guthrie St.</br>
-         The Agenda can be found <a href="{url}">here</a>.</br>
-         Other business currently on the agenda: {", ".join(other_business)}""",
-         "contacts":committee}
-    r = requests.post("https://api.tidyhq.com/v1/emails",params=p)
+        p = {"access_token":config["tidytoken"],
+             "subject":"Notice of Perth Artifactory Inc Committee Meeting",
+             "body":f"""The next meeting of the Management Committee is scheduled for {newest} at 8/16 Guthrie St.</br>
+             The Agenda can be found <a href="{url}">here</a>.</br>
+             Other business currently on the agenda: {", ".join(other_business)}""",
+             "contacts":[contact["id"]]}
+        r_post = requests.post("https://api.tidyhq.com/v1/emails",params=p)
