@@ -13,6 +13,15 @@ from slack_sdk.webhook import WebhookClient
 with open("config.json","r") as f:
     config = json.load(f)
 
+force_slack = False
+force_tidy = False
+
+if len(sys.argv) > 1:
+    if "force-slack" in sys.argv:
+        force_slack = True
+    if "force-tidy" in sys.argv:
+        force_tidy = True
+
 slack = WebhookClient(config["webhook"])
 
 newest = datetime.datetime(1901, 1, 1)
@@ -72,9 +81,9 @@ other_business_string = ""
 for ob in other_business:
     other_business_string += f' ‣ {ob}\n'
 
-print(f"It is {days_until_meeting} days until the next meeting")
+print(f"It is {days_until_meeting} days ({hours_until_meeting} hours) until the next meeting")
 
-if days_until_meeting in [7,3]:
+if days_until_meeting in [7,3] or force_slack:
     blocks=[
         {
             "type": "section",
@@ -126,7 +135,7 @@ elif -1 < hours_until_meeting < 24:
     text="A meeting notice has been sent",
     blocks=blocks)
 
-if days_until_meeting == 2:
+if days_until_meeting == 2 or force_tidy:
     r = requests.get(f'https://api.tidyhq.com/v1/groups/{config["committee_id"]}/contacts',params={"access_token":config["tidytoken"]})
     for contact in r.json():
         p = {"access_token":config["tidytoken"],
