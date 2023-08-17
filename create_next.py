@@ -14,16 +14,16 @@ with open("config.json","r") as f:
 newest = datetime.datetime(1901, 1, 1)
 newest_file = ""
 meeting_tomorrow = False
-for minute in glob.glob(f'{config["minute_directory"]}\*.md'):
-    file = minute.split("\\")[-1].replace(".md","")
+for minute in glob.glob(f'{config["minute_directory"]}*.md'):
+    file = minute.split("/")[-1].replace(".md","")
     
     pattern = "Scheduled start: \d{4}-\d{2}-\d{2}, (2[0-3]|[01]?[0-9]):[0-5][0-9]"
     with open(minute,"r", encoding='utf-8') as f:
         x = re.search(pattern, f.read())
         if x:
-            filedate = datetime.datetime.strptime(file,"Scheduled start: %Y-%m-%d, %H:%M")
+            filedate = datetime.datetime.strptime(x.group(),"Scheduled start: %Y-%m-%d, %H:%M")
         else:
-            filedate = datetime.datetime.strptime(x.group(),"%Y-%m-%d")
+            filedate = datetime.datetime.strptime(file, "%Y-%m-%d")
     if filedate > newest:
         newest = filedate
         newest_file = minute

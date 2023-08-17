@@ -14,8 +14,8 @@ with open("config.json","r") as f:
 
 tomorrow = datetime.date.today() + datetime.timedelta(days=1)
 meeting_tomorrow = False
-for minute in glob.glob(f'{config["minute_directory"]}\*.md'):
-    file = minute.split("\\")[-1].replace(".md","")
+for minute in glob.glob(f'{config["minute_directory"]}*.md'):
+    file = minute.split("/")[-1].replace(".md","")
     filedate = datetime.datetime.strptime(file,"%Y-%m-%d")
     if (filedate.day, filedate.month, filedate.year) == (tomorrow.day, tomorrow.month, tomorrow.year):
         print(minute)
