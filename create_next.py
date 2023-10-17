@@ -68,11 +68,14 @@ else:
     template = re.sub("dateCreated: .{24}","dateCreated: "+s, template)
     template = re.sub("date: .{24}","date: "+s, template)
 
-    action_items = old_minutes.split("## Action Summary\n\n")[1]
-    action_items = action_items.replace("|\n","| Status | \n",1)
-    action_items = action_items.replace("|\n","| ------ | \n",1)
-    action_items = action_items.replace("|\n","| STATUS | \n")
-    action_items = action_items.replace("| \n","|\n")
+    if len(old_minutes.split("## Action Summary\n\n")) < 2:
+        action_items = "No action items from previous meeting"
+    else:
+        action_items = old_minutes.split("## Action Summary\n\n")[1]
+        action_items = action_items.replace("|\n","| Status | \n",1)
+        action_items = action_items.replace("|\n","| ------ | \n",1)
+        action_items = action_items.replace("|\n","| STATUS | \n")
+        action_items = action_items.replace("| \n","|\n")
     sect = "## Review Previous Meeting's Action Items\n"
     template = template.replace(sect,f'{sect}\n{action_items}')
 
