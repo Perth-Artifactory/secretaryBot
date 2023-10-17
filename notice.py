@@ -14,7 +14,7 @@ with open("config.json","r") as f:
     config = json.load(f)
 
 force_slack = False
-force_tidy = False
+force_tidyhq = False
 
 if len(sys.argv) > 1:
     if "force-slack" in sys.argv:
