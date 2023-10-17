@@ -28,12 +28,18 @@ for minute in glob.glob(f'{config["minute_directory"]}*.md'):
         newest = filedate
         newest_file = minute
 
+print(f"Newest file: {newest_file}")
+
 with open(newest_file,"r") as f:
     old_minutes = f.read()
 
 pattern = "Next meeting: \d{4}-\d{2}-\d{2}, (2[0-3]|[01]?[0-9]):[0-5][0-9]"
 x = re.search(pattern, old_minutes)
-if x:
+
+if not x:
+    print("No next meeting found")
+
+else:
     next_meeting = datetime.datetime.strptime(x.group(),"Next meeting: %Y-%m-%d, %H:%M")
 
     # Clean up any stray template links to the next meeting that haven't been filled in
