@@ -1,23 +1,15 @@
 #!/usr/bin/python3
 
 import re
-import glob
 import json
-import datetime
 import os
-import sys
-from pprint import pprint
 
 from datetime import datetime
 
 with open("config.json", "r") as f:
     config = json.load(f)
 
-meeting_tomorrow = False
-
 minute_filenames = [fn for fn in os.listdir(config["minute_directory"]) if fn.endswith(".md")]
-
-print(minute_filenames)
 
 # Make sure that every minute filename is (probably) an ISO date.
 for filename in minute_filenames:
@@ -30,7 +22,7 @@ newest_file = sorted(minute_filenames)[-1]
 newest = datetime.strptime(newest_file, "%Y-%m-%d.md")
 print(f"Newest file: {newest_file}")
 
-# Check
+# Check if the newest minutes file contains the date of the next meeting
 newest_file_path = os.path.join(config["minute_directory"], newest_file)
 with open(newest_file_path, "r") as f:
     old_minutes = f.read()
@@ -47,21 +39,25 @@ Next\ meeting:\s
 (h|hrs)?
 """, flags=re.VERBOSE)
 
-x = re.search(next_meeting_pattern, old_minutes)
+next_meeting_date = re.search(next_meeting_pattern, old_minutes)
 
-if not x:
+# If the next meeting date hasn't been set, do nothing.
+if not next_meeting_date:
     print("No next meeting found")
 
+# If the next meeting date has been set -
+# * Replace placeholder links to the next meeting minutes with a link to the new minutes
+# * Create the new minutes
 else:
-    next_meeting_date_and_time = f"{x.group('date')} {x.group('hours')}:{x.group('minutes')}"
+    next_meeting_date_and_time = f"{next_meeting_date.group('date')} {next_meeting_date.group('hours')}:{next_meeting_date.group('minutes')}"
     next_meeting = datetime.strptime(next_meeting_date_and_time, "%Y-%m-%d %H:%M")
 
     # Clean up any stray template links to the next meeting that haven't been filled in
-    x = re.sub("NNNN-NN-NN", next_meeting.strftime("%Y-%m-%d"), old_minutes)
-    if x != old_minutes:
+    next_meeting_date = re.sub("NNNN-NN-NN", next_meeting.strftime("%Y-%m-%d"), old_minutes)
+    if next_meeting_date != old_minutes:
         with open(newest_file_path, "w") as f:
-            f.write(x)
-            old_minutes = x
+            f.write(next_meeting_date)
+            old_minutes = next_meeting_date
 
     with open(config["minute_template"], "r") as f:
         template = f.read()
